@@ -28,13 +28,12 @@ def _validar_data(data_str) -> bool:
 def _imprimir_mensagem(mensagem: str) -> str:
     print(mensagem)
 
-def _buscar_consulta(paciente, data, hora) -> Atendimento:
-    try:
-        for consulta in agenda:
-            if paciente == consulta.paciente and data == consulta.data and hora == consulta.hora:
-                return consulta
-    except:
-        raise ValueError("A consulta não foi encontrada no sistema")
+def _buscar_consulta(paciente, data, hora) -> Atendimento: 
+    for consulta in agenda:
+        if paciente == consulta.paciente and data == consulta.data and hora == consulta.hora:
+            return consulta
+
+    
 
 def _verificar_disponibilidade(profissional, data, hora) -> bool:
     for consulta in agenda:
@@ -47,7 +46,7 @@ def marcar_consulta(paciente, profissional, data, hora, duracao):
     if duracao > 0 and HORARIO_INICIO <= hora <= HORARIO_FIM and _validar_data(data):
         if duracao > 60 and hora == 17:
             return _imprimir_mensagem("A consulta ultrapassa o horário de funcionamento da clínica")
-        if _verificar_disponibilidade(profissional, data, hora):
+        if not _verificar_disponibilidade(profissional, data, hora):
             return _imprimir_mensagem("Horário ocupado")
     else:
         return _imprimir_mensagem("Erro ao marcar consulta, duração, horário ou data estão incorretos")
@@ -82,11 +81,12 @@ def listar_atendimentos_do_dia(data):
 
     for atendimento in agenda:
         if atendimento.data == data:
-            _imprimir_mensagem(f"{atendimento.hora}, {atendimento.paciente}, {atendimento.profissional}, {atendimento.status}")
+            _imprimir_mensagem(f"{atendimento.hora} {atendimento.paciente} {atendimento.profissional} {atendimento.status}")
 
 
-marcar_consulta("Ana", "Dr. Silva", "2026-10-05", 9, 30)
-marcar_consulta("Bruno", "Dr. Silva", "2026-10-05", 9, 30)
+# marcar_consulta(PACIENTE, PROFISSIONAL, DATA, HORA, DURAÇÃO)
+marcar_consulta("Ana", "Dra. Silva", "2026-10-05", 9, 30)
+marcar_consulta("Bruno", "Dra. Silva", "2026-10-05", 9, 30)
 marcar_consulta("Carla", "Dra. Souza", "2026-10-05", 14, 60)
 remarcar_consulta("Ana", "2026-10-05", 9, "2026-10-06", 10)
 listar_atendimentos_do_dia("2026-10-05")
