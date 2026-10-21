@@ -19,16 +19,50 @@ class Atendimento:
 agenda: list[Atendimento] = []
 
 def _validar_data(data_str) -> bool:
+    """Validar se a data inserida no sistema é uma data válida.
+
+    Está função recebe uma data como string no formato AAAA-MM-DD e retorna se é uma
+    data válida ou não.
+
+    Args:
+        data_str (str): A data inserida pelo usuário no sistema.
+
+    Returns:
+        bool: True se a data for válida e False caso não seja uma data válida.
+    """
     try:
         datetime.strptime(data_str, "%Y-%m-%d")
         return True
     except ValueError:
         return False
 
-def _imprimir_mensagem(mensagem: str) -> str:
+def _imprimir_mensagem(mensagem: str) -> None:
+    """Imprime no terminal a mensagem recebida.
+
+    Essa função possui a responsabilidade de exibir as mensagens, printar no terminal.
+
+    Args:
+        mensagem (str): A mensagem que deve ser exibida.
+
+    Retunr:
+        None: Apenas a ação é execultada, sem retorno de nada pela função.
+    """
     print(mensagem)
 
-def _buscar_consulta(paciente, data, hora) -> Atendimento: 
+def _buscar_consulta(paciente, data, hora) -> Atendimento|None:
+    """Função que busca uma consulta no sistema.
+
+    Esta função interna possui a responsabilidade de buscar uma consulta nos agendamentos.
+
+    Args:
+        paciente (str): Nome do paciente.
+        data (str): Data na qual a consulta está marcada, no formato AAAA-MM-DD e como string.
+        hora (int): Hora na qual a consulta está agendada.
+
+    Returns:
+        Atendimento: Retorna o objeto do atendimento, caso a consulta seja encontrada.
+        None: Retorna None caso a consulta não seja encontrada.
+    """ 
     for consulta in agenda:
         if paciente == consulta.paciente and data == consulta.data and hora == consulta.hora:
             return consulta
@@ -36,6 +70,19 @@ def _buscar_consulta(paciente, data, hora) -> Atendimento:
     
 
 def _verificar_disponibilidade(profissional, data, hora) -> bool:
+    """Verifica se um profissional está disponível em determinada data e horário.
+
+    Essa função possui a responsabilidade de verificar a disponibilidade de um profissional,
+    em determina data e hora.
+
+    Args:
+        profissional (str): Nome do profissional que deseja ver a disponibilidade.
+        data (str): Data no formato AAAA-MM-AA que deseja ver a disponibilidade.
+        hora (int): Horário no qual deseja ver a disponibilidade.
+
+    Returns:
+        bool: Retorna True se a agenda estiver vaga e False caso não esteja.
+    """
     for consulta in agenda:
         if consulta.profissional == profissional and consulta.data == data and consulta.hora == hora:
             return False
@@ -43,6 +90,21 @@ def _verificar_disponibilidade(profissional, data, hora) -> bool:
     return True
 
 def marcar_consulta(paciente, profissional, data, hora, duracao):
+    """Realiza a marcação de uma consulta.
+
+    Essa função possui a responsabilidade de marcar uma consulta para um paciente em determinado
+    horário, data e com profissional, caso esteja disponível.
+
+    Args:
+        paciente (str): Nome do paciente.
+        profissional (str): Nome do profissional para o qual o paciente deseja marcar.
+        data (str): Data da consulta desejada.
+        hora (int): Horário da consulta desejada.
+        duracao (int): Duração do horário da consulta.
+
+    Returns:
+        str: 
+    """
     if duracao > 0 and HORARIO_INICIO <= hora <= HORARIO_FIM and _validar_data(data):
         if duracao > 60 and hora == 17:
             return _imprimir_mensagem("A consulta ultrapassa o horário de funcionamento da clínica")
